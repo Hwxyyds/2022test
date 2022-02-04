@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.houtai.mappers.BookMapper">
+
+    <resultMap id="bookResultMap" type="book">
+        <result property="name" column="name" />
+        <result property="author" column="author" />
+    </resultMap>
+
+
+
+    <delete id="deleteByIds">
+        delete from t_book where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+
+
+    </delete>
+    <!-- where book_name = #{book.bookName}-->
+    <select id="selectByPageAndCondition" resultMap="bookResultMap">
+        select *
+        from t_book
+        <where>
+            <if test="book.name != null and book.name != '' ">
+                and  name like #{book.name}
+            </if>
+
+            <if test="book.author != null and book.author != '' ">
+                and  author like #{book.author}
+            </if>
+
+        </where>
+
+        limit #{begin} , #{size}
+
+    </select>
+    <select id="selectTotalCountByCondition" resultType="java.lang.Integer">
+
+        select count(*)
+        from t_book
+        <where>
+            <if test="name != null and name != '' ">
+                and  name like #{name}
+            </if>
+
+            <if test="author != null and author != '' ">
+                and  author like #{author}
+            </if>
+
+        </where>
+
+    </select>
+
+</mapper>
